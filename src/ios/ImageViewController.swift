@@ -25,13 +25,15 @@ class ImageViewController: UIViewController, UIScrollViewDelegate {
     
     private var cancellables = Set<AnyCancellable>()
     
+    var ratioConstraint: NSLayoutConstraint? = nil
+    
     /**
      Image that should be displayed
      */
     public var image: UIImage? = nil {
         didSet {
-            if let mScrollView = imageView {
-                mScrollView.image = image
+            if let mImageView = imageView {
+                mImageView.image = image
             }
         }
     }
@@ -83,8 +85,13 @@ class ImageViewController: UIViewController, UIScrollViewDelegate {
     
     
     private func addImageTo(_ scrollView: UIScrollView) {
-        imageView!.image = image
-        imageView!.contentMode = .scaleAspectFit
+        imageView.image = image
+        imageView.contentMode = .scaleAspectFit
+        if let mImage = image {
+            ratioConstraint = NSLayoutConstraint(item: imageView!, attribute: .width, relatedBy: .equal, toItem: imageView, attribute: .height, multiplier: mImage.size.width / mImage.size.height, constant: 0)
+            imageView.addConstraint(ratioConstraint!)
+        }
+        
     }
     
     private func setCloseBtn() {

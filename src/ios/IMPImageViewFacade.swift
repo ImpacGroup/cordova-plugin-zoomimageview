@@ -6,9 +6,8 @@
 //
 
 import Foundation
-import Cordova
 
-@objc (ImpacImageView) class IMPImageViewFacade: CDVPlugin {
+@objc (Zoomimageview) class IMPImageViewFacade: CDVPlugin {
     
     @objc(presentImage:) func presentImage(command: CDVInvokedUrlCommand) {
         if command.arguments.count == 1, let infoJson = command.arguments[0] as? String {
@@ -21,7 +20,7 @@ import Cordova
                     imgViewController.image = info.image
                     imgViewController.showCloseBtn = info.closeButton
                     imgViewController.imageRect = info.imageRect
-                    viewController.present(viewController, animated: false, completion: nil)
+                    viewController.present(imgViewController, animated: false, completion: nil)
                 }
             } catch {
                 print("cordova-plugin-tracking-transparency: \(error)")

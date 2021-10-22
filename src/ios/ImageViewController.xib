@@ -32,10 +32,7 @@
                             <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                             <subviews>
                                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" image="banner@lg" translatesAutoresizingMaskIntoConstraints="NO" id="7vn-Hy-cHq">
-                                    <rect key="frame" x="0.0" y="328.5" width="414" height="239"/>
-                                    <constraints>
-                                        <constraint firstAttribute="width" secondItem="7vn-Hy-cHq" secondAttribute="height" multiplier="1300:750" id="iPr-uq-Tky"/>
-                                    </constraints>
+                                    <rect key="frame" x="0.0" y="73" width="414" height="750"/>
                                 </imageView>
                             </subviews>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
