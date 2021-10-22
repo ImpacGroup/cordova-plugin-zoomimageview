@@ -1,0 +1,42 @@
+{
+  "name": "cordova-plugin-zoomimageview",
+  "version": "1.0.0",
+  "description": "An Cordova plugin for iOS and Android that allows to display an image in fullscreen and zoom in and out.",
+  "cordova": {
+    "id": "cordova-plugin-zoomimageview",
+    "platforms": [
+      "ios",
+      "android"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ImpacGroup/cordova-plugin-zoomimageview.git"
+  },
+  "keywords": [
+    "cordova",
+    "android",
+    "ios",
+    "image",
+    "ecosystem:cordova",
+    "cordova-ios",
+    "cordova-android",
+    "zoom",
+    "scrollview",
+    "photos"
+  ],
+  "engines": {
+    "cordovaDependencies": {
+      "1.0.0": {
+        "cordova-android": ">9.0.0",
+        "cordova-ios": ">6.0.0"
+      }
+    }
+  },
+  "author": "Impac GmbH",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ImpacGroup/cordova-plugin-zoomimageview/issues"
+  },
+  "homepage": "https://github.com/ImpacGroup/cordova-plugin-zoomimageview#readme"
+}

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        id="cordova-plugin-zoomimageview" version="1.0.0">
+    <name>zoomimageview</name>
+
+    <description>An Cordova plugin for iOS and Android that allows to display an image in fullscreen and zoom in and out.</description>
+    <license>MIT</license>
+
+    <keywords>cordova,android,ios,image,photos,zoom</keywords>
+    <repo>https://github.com/ImpacGroup/cordova-plugin-zoomimageview.git</repo>
+    <issue>https://github.com/ImpacGroup/cordova-plugin-zoomimageview/issues</issue>
+
+    <engines>
+        <engine name="cordova" version=">=6.0.0"/>
+    </engines>
+
+    <js-module src="www/zoomimageview.js" name="zoomimageview">
+        <clobbers target="window.plugins.zoomimageview" />
+    </js-module>
+
+    <platform name="ios">
+        <config-file target="config.xml" parent="/*">
+            <feature name="Zoomimageview">
+                <param name="ios-package" value="Zoomimageview"/>
+            </feature>
+        </config-file>
+        <source-file src="src/ios/ImageInfo.swift"/>
+        <source-file src="src/ios/ImageViewController.swift"/>
+        <source-file src="src/ios/ImageViewController.xib"/>
+        <source-file src="src/ios/IMPImageViewFacade.swift"/>
+        <source-file src="src/ios/ViewController-Extension.swift"/>
+    </platform>
+
+    <platform name="android">
+
+        <config-file target="config.xml" parent="/*">
+            <feature name="ImpacInappPayment">
+                <param name="android-package" value="de.impacgroup.zoomimageview.Zoomimageview" />
+            </feature>
+        </config-file>
+    </platform>
+</plugin>
