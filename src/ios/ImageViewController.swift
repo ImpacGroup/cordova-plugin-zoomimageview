@@ -25,7 +25,12 @@ class ImageViewController: UIViewController, UIScrollViewDelegate {
     
     private var cancellables = Set<AnyCancellable>()
     
-    var ratioConstraint: NSLayoutConstraint? = nil
+    private var ratioConstraint: NSLayoutConstraint? = nil
+    
+    /**
+     Delegate of the view controller.
+     */
+    public weak var delegate: ImageViewControllerDelegate? = nil
     
     /**
      Image that should be displayed
@@ -143,6 +148,7 @@ class ImageViewController: UIViewController, UIScrollViewDelegate {
     }
     
     @objc func closeViewController() {
+        delegate?.willClose()
         prepareClose().sink { [weak self] _ in
             guard let strongSelf = self else { return }
             if let mRect = strongSelf.imageRect {
@@ -151,7 +157,9 @@ class ImageViewController: UIViewController, UIScrollViewDelegate {
             UIView.animate(withDuration: 0.25, delay: 0.15) {
                 self?.backgroundView.alpha = 0
             } completion: { success in
-                self?.dismiss(animated: false, completion: nil)
+                self?.dismiss(animated: false, completion: {
+                    self?.delegate?.didClose()
+                })
             }
         }.store(in: &cancellables)
     }
