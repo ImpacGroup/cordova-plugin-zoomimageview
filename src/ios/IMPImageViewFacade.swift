@@ -19,7 +19,14 @@ import Foundation
                     imgViewController.modalPresentationStyle = .overFullScreen
                     imgViewController.image = info.image
                     imgViewController.showCloseBtn = info.closeButton
-                    imgViewController.imageRect = info.imageRect
+                    
+                    if let rect = info.imageRect?.toCGRect() {
+                        let statusBarHeight = viewController.view.window?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
+                        var finalRect = rect
+                        finalRect.origin.y = finalRect.origin.y + statusBarHeight
+                        imgViewController.imageRect = finalRect
+                    }
+                    
                     viewController.present(imgViewController, animated: false, completion: nil)
                 }
             } catch {
