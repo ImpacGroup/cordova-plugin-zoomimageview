@@ -23,6 +23,8 @@ class ImageViewController: UIViewController, UIScrollViewDelegate {
     
     @IBOutlet var imageView: UIImageView!
     
+    private var closeBtn: UIButton?
+    
     private var cancellables = Set<AnyCancellable>()
     
     private var ratioConstraint: NSLayoutConstraint? = nil
@@ -101,24 +103,25 @@ class ImageViewController: UIViewController, UIScrollViewDelegate {
     
     private func setCloseBtn() {
         let size: CGFloat = 20
-        let closeBtn = UIButton(type: .custom)
-        closeBtn.frame = CGRect(x: 0, y: 0, width: size, height: size)
-        closeBtn.imageView?.contentMode = .scaleAspectFit
-        closeBtn.contentVerticalAlignment = .fill
-        closeBtn.contentHorizontalAlignment = .fill
-        closeBtn.setImage(UIImage(systemName: "xmark", withConfiguration: UIImage.SymbolConfiguration(weight: .medium)), for: .normal)
+        closeBtn = UIButton(type: .custom)
+        closeBtn?.frame = CGRect(x: 0, y: 0, width: size, height: size)
+        closeBtn?.imageView?.contentMode = .scaleAspectFit
+        closeBtn?.alpha = 0.0
+        closeBtn?.contentVerticalAlignment = .fill
+        closeBtn?.contentHorizontalAlignment = .fill
+        closeBtn?.setImage(UIImage(systemName: "xmark", withConfiguration: UIImage.SymbolConfiguration(weight: .medium)), for: .normal)
         
         
-        closeBtn.tintColor = .white
-        closeBtn.addTarget(self, action: #selector(closeViewController), for: .touchUpInside)
-        closeBtn.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(closeBtn)
+        closeBtn?.tintColor = .white
+        closeBtn?.addTarget(self, action: #selector(closeViewController), for: .touchUpInside)
+        closeBtn?.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(closeBtn!)
         
-        let heightConstraint = NSLayoutConstraint(item: closeBtn, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .height, multiplier: 1, constant: size)
-        let widthConstraint = NSLayoutConstraint(item: closeBtn, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .width, multiplier: 1, constant: size)
-        closeBtn.addConstraint(heightConstraint)
-        closeBtn.addConstraint(widthConstraint)
-        let topConstraint = NSLayoutConstraint(item: closeBtn, attribute: .top, relatedBy: .equal, toItem: view.safeAreaLayoutGuide, attribute: .top, multiplier: 1, constant: 8)
+        let heightConstraint = NSLayoutConstraint(item: closeBtn!, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .height, multiplier: 1, constant: size)
+        let widthConstraint = NSLayoutConstraint(item: closeBtn!, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .width, multiplier: 1, constant: size)
+        closeBtn?.addConstraint(heightConstraint)
+        closeBtn?.addConstraint(widthConstraint)
+        let topConstraint = NSLayoutConstraint(item: closeBtn!, attribute: .top, relatedBy: .equal, toItem: view.safeAreaLayoutGuide, attribute: .top, multiplier: 1, constant: 8)
         view.addConstraint(topConstraint)
         let trailingConstraint = NSLayoutConstraint(item: view.safeAreaLayoutGuide, attribute: .trailing, relatedBy: .equal, toItem: closeBtn, attribute: .trailing, multiplier: 1, constant: 16)
         view.addConstraint(trailingConstraint)
@@ -156,6 +159,7 @@ class ImageViewController: UIViewController, UIScrollViewDelegate {
             }
             UIView.animate(withDuration: 0.25, delay: 0.15) {
                 self?.backgroundView.alpha = 0
+                self?.closeBtn?.alpha = 0
             } completion: { success in
                 self?.dismiss(animated: false, completion: {
                     self?.delegate?.didClose()
@@ -205,6 +209,7 @@ class ImageViewController: UIViewController, UIScrollViewDelegate {
         
         UIView.animate(withDuration: 0.15, delay: 0.0, options: .curveEaseInOut) { [weak self] in
             self?.backgroundView.alpha = 1.0
+            self?.closeBtn?.alpha = 1.0
             if self?.imageRect == nil {
                 self?.scrollView?.alpha = 1.0
             }
