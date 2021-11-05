@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
         xmlns:android="http://schemas.android.com/apk/res/android"
-        id="cordova-plugin-zoomimageview" version="1.0.8">
+        id="cordova-plugin-zoomimageview" version="1.1.8">
     <name>zoomimageview</name>
 
     <description>An Cordova plugin for iOS and Android that allows to display an image in fullscreen and zoom in and out.</description>
@@ -35,9 +35,33 @@
     <platform name="android">
 
         <config-file target="config.xml" parent="/*">
-            <feature name="ImpacInappPayment">
-                <param name="android-package" value="de.impacgroup.zoomimageview.Zoomimageview" />
+            <feature name="Zoomimageview">
+                <param name="android-package" value="de.impacgroup.zoomimageview.ZoomImageView" />
             </feature>
         </config-file>
+        
+        <config-file target="AndroidManifest.xml" parent="/manifest/application">
+            <activity android:label="Zoom-Image-Activity" android:name="de.impacgroup.zoomimageview.module.ZoomImageActivity"></activity>
+        </config-file>
+        
+        <source-file src="src/android/AnimationDirection.kt" target-dir="src/main/kotlin/de/impacgroup/zoomimageview/module"/>
+        <source-file src="src/android/AnimationListener.kt" target-dir="src/main/kotlin/de/impacgroup/zoomimageview/module"/>
+        <source-file src="src/android/ZoomImage.kt" target-dir="src/main/kotlin/de/impacgroup/zoomimageview/module"/>
+        <source-file src="src/android/ZoomImageActivity.kt" target-dir="src/main/kotlin/de/impacgroup/zoomimageview/module"/>
+        <source-file src="src/android/ZoomImageFragment.kt" target-dir="src/main/kotlin/de/impacgroup/zoomimageview/module"/>
+        <source-file src="src/android/ZoomImageView.java" target-dir="src/de/impacgroup/zoomimageview"/>
+        <source-file src="src/android/ImageInfo.kt" target-dir="src/main/kotlin/de/impacgroup/zoomimageview"/>
+        <source-file src="src/android/activity_zoom_image.xml" target-dir="res/layout"/>
+        <source-file src="src/android/zoom_image_fragment.xml" target-dir="res/layout"/>
+        <source-file src="src/android/ic_baseline_close_24.xml" target-dir="res/drawable"/>
+        <source-file src="src/android/zoom_theme.xml" target-dir="res/values"/>
+        <framework src="com.github.MikeOrtiz:TouchImageView:3.1.1"/>
+        <framework src="com.google.code.gson:gson:2.8.7"/>
+        <framework src="androidx.constraintlayout:constraintlayout:2.1.1"/>
+        <framework src="androidx.core:core-ktx:1.6.0"/>
+        <framework src="androidx.fragment:fragment-ktx:1.3.6"/>
+        <framework src="androidx.transition:transition-ktx:1.4.1"/>
+        <framework src="androidx.lifecycle:lifecycle-extensions:2.2.0"/>
+        <framework src="src/android/imageView.gradle" custom="true" type="gradleReference"/>
     </platform>
 </plugin>
