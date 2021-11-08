@@ -10,16 +10,11 @@ import android.view.View
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.util.*
-
-enum class ResourceType(val key: String) {
-    Layout("layout"),
-    Style("style"),
-    Id("id")
-}
 
 class ZoomImageActivity : AppCompatActivity() {
 
@@ -30,12 +25,20 @@ class ZoomImageActivity : AppCompatActivity() {
         private const val IMAGE_DATA_KEY = "imageData"
         private const val IMAGE_POSITION_KEY = "imagePosition"
         const val CLOSE_BUTTON_KEY = "showCloseButton"
+        const val ZOOM_IMAGE_STATE_ACTION = "zoom-image-view-state"
+        const val ZOOM_IMAGE_STATE_KEY = "viewState"
+
 
         override fun present(activity: AppCompatActivity, bitmap: Bitmap, point: IntArray?) {
             present(activity, bitmap, point, true)
         }
 
-        override fun present(activity: AppCompatActivity, bitmap: Bitmap, point: IntArray?, closeButton: Boolean) {
+        override fun present(
+            activity: AppCompatActivity,
+            bitmap: Bitmap,
+            point: IntArray?,
+            closeButton: Boolean
+        ) {
             val file = saveImage(activity.applicationContext , bitmap)
             val detailIntent = Intent(activity.applicationContext, ZoomImageActivity::class.java)
             detailIntent.putExtra(IMAGE_DATA_KEY, file.path)
@@ -44,6 +47,7 @@ class ZoomImageActivity : AppCompatActivity() {
             activity.startActivity(detailIntent)
             activity.overridePendingTransition(android.R.anim.fade_in, 0)
         }
+
 
         private fun saveImage(context: Context, bitmap: Bitmap): File {
             val file = File.createTempFile(String.format("%s.jpeg", UUID.randomUUID().toString()), null, context.cacheDir)
@@ -68,9 +72,9 @@ class ZoomImageActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(loadResource("Theme.ZoomView", ResourceType.Style))
+        setTheme(loadResource("Theme.ZoomView", ResourceType.STYLE))
         super.onCreate(savedInstanceState)
-        setContentView(loadResource("activity_zoom_image", ResourceType.Layout))
+        setContentView(loadResource("activity_zoom_image", ResourceType.LAYOUT))
 
         intent.extras?.getString(IMAGE_DATA_KEY)?.let {
             val bitmap = BitmapFactory.decodeFile(it)
@@ -78,7 +82,7 @@ class ZoomImageActivity : AppCompatActivity() {
         }
 
         intent.extras?.getBoolean(CLOSE_BUTTON_KEY)?.let {
-            val closeBtn: ImageButton = findViewById(loadResource("close_button", ResourceType.Id))
+            val closeBtn: ImageButton = findViewById(loadResource("close_button", ResourceType.IDENTIFIER))
             closeBtn.visibility = if (it){View.VISIBLE} else {View.GONE}
             closeBtn.setOnClickListener {
                 dismiss()
@@ -86,12 +90,12 @@ class ZoomImageActivity : AppCompatActivity() {
         }
     }
 
-     private fun present(bitmap: Bitmap, position: IntArray?) {
-         imageFragment = ZoomImageFragment.present(bitmap, position)
-         val transaction = supportFragmentManager.beginTransaction()
-         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-         val view = findViewById<View>(loadResource("fragment_container_view", ResourceType.Id))
-         transaction.add(view.id, imageFragment).commit()
+    private fun present(bitmap: Bitmap, position: IntArray?) {
+        imageFragment = ZoomImageFragment.present(bitmap, position)
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+        val view = findViewById<View>(loadResource("fragment_container_view", ResourceType.IDENTIFIER))
+        transaction.add(view.id, imageFragment).commit()
     }
 
     override fun onBackPressed() {
@@ -99,7 +103,8 @@ class ZoomImageActivity : AppCompatActivity() {
     }
 
     private fun dismiss() {
-        imageFragment.animate(AnimationDirection.fromCenter, object: AnimationListener {
+        send(ViewState.WILL_CLOSE)
+        imageFragment.animate(AnimationDirection.FROM_CENTER, object: AnimationListener {
             override fun onAnimationEnd() {
                 val transaction = supportFragmentManager.beginTransaction()
                 transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
@@ -109,5 +114,18 @@ class ZoomImageActivity : AppCompatActivity() {
                 overridePendingTransition(0, android.R.anim.fade_out)
             }
         })
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (isFinishing) {
+            send(ViewState.DID_CLOSE)
+        }
+    }
+
+    private fun send(state: ViewState) {
+        val intent = Intent(ZOOM_IMAGE_STATE_ACTION)
+        intent.putExtra(ZOOM_IMAGE_STATE_KEY, state.key)
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
     }
 }

@@ -47,10 +47,10 @@ class ZoomImageFragment: Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        val view = inflater.inflate(loadResource("zoom_image_fragment", ResourceType.Layout)!!, container, false)
-        zoomImageView = view.findViewById(loadResource("zoomImageView", ResourceType.Id)!!)
-        animImageView = view.findViewById(loadResource("animImageView", ResourceType.Id)!!)
-        zoomImageFragment = view.findViewById(loadResource("zoom_image_layout", ResourceType.Id)!!)
+        val view = inflater.inflate(loadResource("zoom_image_fragment", ResourceType.LAYOUT)!!, container, false)
+        zoomImageView = view.findViewById(loadResource("zoomImageView", ResourceType.IDENTIFIER)!!)
+        animImageView = view.findViewById(loadResource("animImageView", ResourceType.IDENTIFIER)!!)
+        zoomImageFragment = view.findViewById(loadResource("zoom_image_layout", ResourceType.IDENTIFIER)!!)
         onViewInitialised()
         return view
     }
@@ -67,7 +67,7 @@ class ZoomImageFragment: Fragment() {
 
         position?.let {
             position = it
-            animate(AnimationDirection.toCenter, object: AnimationListener {
+            animate(AnimationDirection.TO_CENTER, object: AnimationListener {
                 override fun onAnimationEnd() {
                     zoomImageView.visibility = View.VISIBLE
                     animImageView.visibility = View.INVISIBLE
@@ -84,11 +84,11 @@ class ZoomImageFragment: Fragment() {
         position?.let {
             animImageView.visibility = View.VISIBLE
             zoomImageView.visibility = View.INVISIBLE
-            val animImageViewId = loadResource("animImageView", ResourceType.Id)
-            val zoomImageFragmentId = loadResource("zoom_image_fragment", ResourceType.Id)
+            val animImageViewId = loadResource("animImageView", ResourceType.IDENTIFIER)
+            val zoomImageFragmentId = loadResource("zoom_image_fragment", ResourceType.IDENTIFIER)
             if (animImageViewId != null && zoomImageFragmentId != null) {
                 when (animationDirection) {
-                    AnimationDirection.toCenter -> {
+                    AnimationDirection.TO_CENTER -> {
                         val startConstraintSet = ConstraintSet()
                         startConstraintSet.clone(zoomImageFragment)
                         startConstraintSet.connect(
@@ -124,7 +124,7 @@ class ZoomImageFragment: Fragment() {
                             endConstraintSet.applyTo(zoomImageFragment)
                         }
                     }
-                    AnimationDirection.fromCenter -> {
+                    AnimationDirection.FROM_CENTER -> {
                         zoomImageFragment.post {
                             val endConstraintSet = ConstraintSet()
                             endConstraintSet.clone(zoomImageFragment)

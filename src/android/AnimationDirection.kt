@@ -1,6 +1,6 @@
 package de.impacgroup.zoomimageview.module
 
 enum class AnimationDirection {
-    toCenter,
-    fromCenter
+    TO_CENTER,
+    FROM_CENTER
 }
