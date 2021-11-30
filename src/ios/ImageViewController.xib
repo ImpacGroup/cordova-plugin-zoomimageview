@@ -11,7 +11,10 @@
             <connections>
                 <outlet property="backgroundView" destination="KXG-lP-Ocg" id="3qJ-Ru-x3q"/>
                 <outlet property="contentView" destination="igX-23-eOh" id="Koa-QI-DuV"/>
+                <outlet property="imageLeadingConstraint" destination="tt8-en-BzW" id="DFp-SF-gOQ"/>
+                <outlet property="imageTrailingConstraint" destination="Zsg-iT-Z5a" id="7mA-54-bnX"/>
                 <outlet property="imageView" destination="7vn-Hy-cHq" id="tqr-Fr-PVt"/>
+                <outlet property="imageWidthConstraint" destination="BPH-Fo-cCT" id="Los-o9-cbB"/>
                 <outlet property="scrollView" destination="Msh-h3-ngf" id="f1L-wX-7ms"/>
                 <outlet property="view" destination="iN0-l3-epB" id="pmL-kx-sTc"/>
             </connections>
@@ -33,15 +36,19 @@
                             <subviews>
                                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" image="banner@lg" translatesAutoresizingMaskIntoConstraints="NO" id="7vn-Hy-cHq">
                                     <rect key="frame" x="0.0" y="73" width="414" height="750"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="414" id="BPH-Fo-cCT"/>
+                                    </constraints>
                                 </imageView>
                             </subviews>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <constraints>
-                                <constraint firstItem="7vn-Hy-cHq" firstAttribute="top" relation="greaterThanOrEqual" secondItem="igX-23-eOh" secondAttribute="top" id="5R4-kl-d4F"/>
+                                <constraint firstItem="7vn-Hy-cHq" firstAttribute="top" relation="greaterThanOrEqual" secondItem="igX-23-eOh" secondAttribute="top" priority="749" id="5R4-kl-d4F"/>
                                 <constraint firstItem="7vn-Hy-cHq" firstAttribute="centerY" secondItem="igX-23-eOh" secondAttribute="centerY" id="DJz-WP-fOj"/>
-                                <constraint firstAttribute="trailing" secondItem="7vn-Hy-cHq" secondAttribute="trailing" id="Zsg-iT-Z5a"/>
-                                <constraint firstItem="7vn-Hy-cHq" firstAttribute="leading" secondItem="igX-23-eOh" secondAttribute="leading" id="tt8-en-BzW"/>
-                                <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="7vn-Hy-cHq" secondAttribute="bottom" id="vFk-6W-JxS"/>
+                                <constraint firstItem="7vn-Hy-cHq" firstAttribute="centerX" secondItem="igX-23-eOh" secondAttribute="centerX" id="Qmw-5T-s2d"/>
+                                <constraint firstAttribute="trailing" secondItem="7vn-Hy-cHq" secondAttribute="trailing" priority="750" id="Zsg-iT-Z5a"/>
+                                <constraint firstItem="7vn-Hy-cHq" firstAttribute="leading" secondItem="igX-23-eOh" secondAttribute="leading" priority="750" id="tt8-en-BzW"/>
+                                <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="7vn-Hy-cHq" secondAttribute="bottom" priority="749" id="vFk-6W-JxS"/>
                             </constraints>
                         </view>
                     </subviews>

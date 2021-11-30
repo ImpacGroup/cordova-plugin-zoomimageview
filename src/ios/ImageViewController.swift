@@ -23,11 +23,19 @@ class ImageViewController: UIViewController, UIScrollViewDelegate {
     
     @IBOutlet var imageView: UIImageView!
     
+    @IBOutlet weak var imageWidthConstraint: NSLayoutConstraint!
+    
+    @IBOutlet weak var imageTrailingConstraint: NSLayoutConstraint!
+    
+    @IBOutlet weak var imageLeadingConstraint: NSLayoutConstraint!
+    
     private var closeBtn: UIButton?
     
     private var cancellables = Set<AnyCancellable>()
     
     private var ratioConstraint: NSLayoutConstraint? = nil
+    
+    private let fadeOutTime: Double = 0.3
     
     /**
      Delegate of the view controller.
@@ -46,6 +54,8 @@ class ImageViewController: UIViewController, UIScrollViewDelegate {
     }
     
     public var imageRect: CGRect? = nil
+    
+    private var startPoint: CGPoint = CGPoint(x: 0, y: 0)
     
     /**
      Indicates if a button should be displayed to dismiss the view controller.
@@ -127,12 +137,6 @@ class ImageViewController: UIViewController, UIScrollViewDelegate {
         view.addConstraint(trailingConstraint)
     }
     
-    private func prepareAppearAnimation() {
-        if imageRect == nil, let mScrollView = scrollView  {
-            mScrollView.alpha = 0.0
-        }
-    }
-    
     /**
      Checks if the scrollview is zoomed in. If that is the case zooms out animated.
      */
@@ -154,10 +158,10 @@ class ImageViewController: UIViewController, UIScrollViewDelegate {
         delegate?.willClose()
         prepareClose().sink { [weak self] _ in
             guard let strongSelf = self else { return }
-            if let mRect = strongSelf.imageRect {
-                strongSelf.animate(rect: mRect, direction: .FromCenter)
+            if strongSelf.imageRect != nil {
+                strongSelf.animateFor(point: strongSelf.startPoint, direction: .FromCenter)
             }
-            UIView.animate(withDuration: 0.25, delay: 0.15) {
+            UIView.animate(withDuration: strongSelf.fadeOutTime / 2, delay: strongSelf.fadeOutTime / 2) {
                 self?.backgroundView.alpha = 0
                 self?.closeBtn?.alpha = 0
             } completion: { success in
@@ -201,10 +205,23 @@ class ImageViewController: UIViewController, UIScrollViewDelegate {
         prepareAppearAnimation()
     }
     
+    private func prepareAppearAnimation() {
+        if imageRect == nil, let mScrollView = scrollView  {
+            mScrollView.alpha = 0.0
+        }
+        if let mRect = imageRect {
+            print(mRect)
+            imageWidthConstraint.constant = mRect.width
+            imageView.layoutIfNeeded()
+            // if mRect.width
+        }
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         if let mImageRect = imageRect {
-            animate(rect: mImageRect, direction: .ToCenter)
+            calcStartOffsetFor(rect: mImageRect)
+            animateFor(point: startPoint, direction: .ToCenter)
         }
         
         UIView.animate(withDuration: 0.15, delay: 0.0, options: .curveEaseInOut) { [weak self] in
@@ -215,26 +232,38 @@ class ImageViewController: UIViewController, UIScrollViewDelegate {
             }
         }
     }
-        
-    private func animate(rect: CGRect, direction: AnimationDirection) {
+    
+    private func calcStartOffsetFor(rect: CGRect) {
         if let mImage = image, let mImageView = imageView {
             let yCenter = scrollView!.frame.height / 2
+            let xCenter = scrollView!.frame.width / 2
             let scaleFactor = mImageView.frame.width / mImage.size.width
             let scaledImageSize = CGSize(width: mImage.size.width * scaleFactor, height: mImage.size.height * scaleFactor)
             let halfImageHeigth = scaledImageSize.height / 2
-            let yPosition = yCenter - rect.origin.y - halfImageHeigth
-            
-            switch direction {
-            case .ToCenter:
-                scrollView?.contentOffset = CGPoint(x: 0, y: yPosition)
-                UIView.animate(withDuration: 0.3, delay: 0.0, options: .curveEaseInOut) { [weak self] in
-                    self?.scrollView?.contentOffset = CGPoint(x: 0, y: 0)
-                }
-            case .FromCenter:
-                scrollView?.contentOffset = CGPoint(x: 0, y: 0)
-                UIView.animate(withDuration: 0.3, delay: 0.0, options: .curveEaseInOut) { [weak self] in
-                    self?.scrollView?.contentOffset = CGPoint(x: 0, y: yPosition)
-                }
+            let halfImageWidth = scaledImageSize.width / 2
+            startPoint = CGPoint(x: xCenter - rect.origin.x - halfImageWidth, y: yCenter - rect.origin.y - halfImageHeigth)
+        }
+    }
+        
+    private func animateFor(point: CGPoint, direction: AnimationDirection) {
+        switch direction {
+        case .ToCenter:
+            scrollView?.contentOffset = CGPoint(x: point.x, y: point.y)
+            imageWidthConstraint.priority = .defaultLow
+            imageTrailingConstraint.priority = .required
+            imageLeadingConstraint.priority = .required
+            UIView.animate(withDuration: 0.3, delay: 0.0, options: .curveEaseInOut) { [weak self] in
+                self?.scrollView?.contentOffset = CGPoint(x: 0, y: 0)
+                self?.view?.layoutIfNeeded()
+            }
+        case .FromCenter:
+            scrollView?.contentOffset = CGPoint(x: 0, y: 0)
+            imageWidthConstraint.priority = .required
+            imageTrailingConstraint.priority = .defaultHigh
+            imageLeadingConstraint.priority = .defaultHigh
+            UIView.animate(withDuration: fadeOutTime, delay: 0.0, options: .curveEaseInOut) { [weak self] in
+                self?.scrollView?.contentOffset = CGPoint(x: point.x, y: point.y)
+                self?.view?.layoutIfNeeded()
             }
         }
     }
