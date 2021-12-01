@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-zoomimageview",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "An Cordova plugin for iOS and Android that allows to display an image in fullscreen and zoom in and out.",
   "cordova": {
     "id": "cordova-plugin-zoomimageview",
