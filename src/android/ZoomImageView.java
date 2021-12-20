@@ -54,18 +54,11 @@ public class ZoomImageView extends CordovaPlugin {
             String base64String = info.getImage().replace("data:image/png;base64,", "").replace("data:image/jpeg;base64,", "");
             byte[] decodedString = Base64.decode(base64String, Base64.NO_WRAP);
             final Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-
-            int[] point = null;
-            if (info.getImageRect() != null) {
-                point = new int[]{info.getImageRect().getX(), info.getImageRect().getY()};
-                point[0] = pxFromDp(cordova.getContext(), point[0]);
-                point[1] = pxFromDp(cordova.getContext(), point[1]) + getStatusBarHeight();
-            }
             AppCompatActivity activity = this.cordova.getActivity();
-            int[] finalPoint = point;
+
             if (bitmap != null) {
                 activity.runOnUiThread(() -> {
-                    ZoomImageActivity.Companion.present(activity, bitmap, finalPoint, info.getCloseButton());
+                    ZoomImageActivity.Companion.present(activity, bitmap, info.getImageRect(), info.getCloseButton());
                 });
                 return true;
             }

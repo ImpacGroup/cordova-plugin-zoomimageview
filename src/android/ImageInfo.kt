@@ -1,6 +1,7 @@
 package de.impacgroup.zoomimageview
 
 import com.google.gson.annotations.SerializedName
+import de.impacgroup.zoomimageview.module.ImageRect
 
 open class ImageInfo(
 
@@ -10,16 +11,4 @@ open class ImageInfo(
     val closeButton: Boolean,
     @SerializedName("imageRect")
     val imageRect: ImageRect?
-)
-
-open class ImageRect(
-
-    @SerializedName("x")
-    val x: Int,
-    @SerializedName("y")
-    val y: Int,
-    @SerializedName("width")
-    val width: Int,
-    @SerializedName("height")
-    val height: Int
 )

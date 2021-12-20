@@ -29,14 +29,14 @@ class ZoomImageActivity : AppCompatActivity() {
         const val ZOOM_IMAGE_STATE_KEY = "viewState"
 
 
-        override fun present(activity: AppCompatActivity, bitmap: Bitmap, point: IntArray?) {
+        override fun present(activity: AppCompatActivity, bitmap: Bitmap, point: ImageRect?) {
             present(activity, bitmap, point, true)
         }
 
         override fun present(
             activity: AppCompatActivity,
             bitmap: Bitmap,
-            point: IntArray?,
+            point: ImageRect?,
             closeButton: Boolean
         ) {
             val file = saveImage(activity.applicationContext , bitmap)
@@ -78,7 +78,7 @@ class ZoomImageActivity : AppCompatActivity() {
 
         intent.extras?.getString(IMAGE_DATA_KEY)?.let {
             val bitmap = BitmapFactory.decodeFile(it)
-            present(bitmap, intent.extras?.getIntArray(IMAGE_POSITION_KEY))
+            present(bitmap, intent.extras?.getParcelable(IMAGE_POSITION_KEY))
         }
 
         intent.extras?.getBoolean(CLOSE_BUTTON_KEY)?.let {
@@ -90,7 +90,7 @@ class ZoomImageActivity : AppCompatActivity() {
         }
     }
 
-    private fun present(bitmap: Bitmap, position: IntArray?) {
+    private fun present(bitmap: Bitmap, position: ImageRect?) {
         imageFragment = ZoomImageFragment.present(bitmap, position)
         val transaction = supportFragmentManager.beginTransaction()
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)

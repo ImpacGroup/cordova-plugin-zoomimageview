@@ -4,7 +4,7 @@ import android.graphics.Bitmap
 import androidx.appcompat.app.AppCompatActivity
 
 interface ZoomImage {
-    fun present(activity: AppCompatActivity, bitmap: Bitmap, point: IntArray?)
+    fun present(activity: AppCompatActivity, bitmap: Bitmap, point: ImageRect?)
 
-    fun present(activity: AppCompatActivity, bitmap: Bitmap, point: IntArray?, closeButton: Boolean)
+    fun present(activity: AppCompatActivity, bitmap: Bitmap, point: ImageRect?, closeButton: Boolean)
 }

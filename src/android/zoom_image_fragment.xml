@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@android:color/black"
     android:fitsSystemWindows="false"
-    tools:context=".module.ZoomImageFragment">
+    tools:context="de.impacgroup.zoomimageview.module.ZoomImageFragment">
 
     <ImageView
         android:id="@+id/animImageView"

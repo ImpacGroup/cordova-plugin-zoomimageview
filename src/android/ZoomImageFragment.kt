@@ -3,6 +3,7 @@ package de.impacgroup.zoomimageview.module
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,10 +30,10 @@ class ZoomImageFragment: Fragment() {
     lateinit var animImageView: ImageView
     lateinit var zoomImageFragment: ConstraintLayout
 
-    var position: IntArray? = null
+    var position: ImageRect? = null
 
     companion object {
-        fun present(bitmap: Bitmap, position: IntArray?): ZoomImageFragment {
+        fun present(bitmap: Bitmap, position: ImageRect?): ZoomImageFragment {
             val fragment = ZoomImageFragment()
             fragment.bitmap = bitmap
             fragment.position = position
@@ -84,6 +85,7 @@ class ZoomImageFragment: Fragment() {
         position?.let {
             animImageView.visibility = View.VISIBLE
             zoomImageView.visibility = View.INVISIBLE
+
             val animImageViewId = loadResource("animImageView", ResourceType.IDENTIFIER)
             val zoomImageFragmentId = loadResource("zoom_image_fragment", ResourceType.IDENTIFIER)
             if (animImageViewId != null && zoomImageFragmentId != null) {
@@ -96,7 +98,23 @@ class ZoomImageFragment: Fragment() {
                             ConstraintSet.TOP,
                             zoomImageFragmentId,
                             ConstraintSet.TOP,
-                            it[1]
+                            it.y.toInt()
+                        )
+                        startConstraintSet.connect(
+                            animImageViewId,
+                            ConstraintSet.START,
+                            zoomImageFragmentId,
+                            ConstraintSet.START,
+                            it.x.toInt()
+                        )
+                        val displayMetrics = DisplayMetrics()
+                        activity?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
+                        startConstraintSet.connect(
+                            animImageViewId,
+                            ConstraintSet.END,
+                            zoomImageFragmentId,
+                            ConstraintSet.END,
+                            displayMetrics.widthPixels - (it.x.toInt() + it.width)
                         )
                         startConstraintSet.applyTo(zoomImageFragment)
 
@@ -108,6 +126,20 @@ class ZoomImageFragment: Fragment() {
                                 ConstraintSet.TOP,
                                 zoomImageFragmentId,
                                 ConstraintSet.TOP,
+                                0
+                            )
+                            endConstraintSet.connect(
+                                animImageViewId,
+                                ConstraintSet.START,
+                                zoomImageFragmentId,
+                                ConstraintSet.START,
+                                0
+                            )
+                            endConstraintSet.connect(
+                                animImageViewId,
+                                ConstraintSet.END,
+                                zoomImageFragmentId,
+                                ConstraintSet.END,
                                 0
                             )
                             endConstraintSet.connect(
@@ -134,7 +166,25 @@ class ZoomImageFragment: Fragment() {
                                 ConstraintSet.TOP,
                                 zoomImageFragmentId,
                                 ConstraintSet.TOP,
-                                it[1]
+                                it.y.toInt()
+                            )
+
+                            endConstraintSet.connect(
+                                animImageViewId,
+                                ConstraintSet.START,
+                                zoomImageFragmentId,
+                                ConstraintSet.START,
+                                it.x.toInt()
+                            )
+
+                            val displayMetrics = DisplayMetrics()
+                            activity?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
+                            endConstraintSet.connect(
+                                animImageViewId,
+                                ConstraintSet.END,
+                                zoomImageFragmentId,
+                                ConstraintSet.END,
+                                displayMetrics.widthPixels - (it.x.toInt() + it.width)
                             )
                             TransitionManager.beginDelayedTransition(
                                 zoomImageFragment,
