@@ -23,6 +23,9 @@ import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.util.Objects;
+
+import de.impacgroup.zoomimageview.module.ImageRect;
 import de.impacgroup.zoomimageview.module.ViewState;
 import de.impacgroup.zoomimageview.module.ZoomImageActivity;
 
@@ -56,9 +59,12 @@ public class ZoomImageView extends CordovaPlugin {
             final Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
             AppCompatActivity activity = this.cordova.getActivity();
 
+            ImageRect rect = Objects.requireNonNull(info.getImageRect()).toDp(cordova.getContext());
+            rect.setY(rect.getY() + getStatusBarHeight());
+
             if (bitmap != null) {
                 activity.runOnUiThread(() -> {
-                    ZoomImageActivity.Companion.present(activity, bitmap, info.getImageRect(), info.getCloseButton());
+                    ZoomImageActivity.Companion.present(activity, bitmap, rect, info.getCloseButton());
                 });
                 return true;
             }
@@ -104,9 +110,6 @@ public class ZoomImageView extends CordovaPlugin {
         }
     };
 
-    public static int pxFromDp(final Context context, final float dp) {
-        return (int) (dp * context.getResources().getDisplayMetrics().density);
-    }
 
     /**
      * Calculates the height of the status bar.

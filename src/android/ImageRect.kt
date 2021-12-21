@@ -1,5 +1,6 @@
 package de.impacgroup.zoomimageview.module
 
+import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
@@ -7,14 +8,15 @@ import com.google.gson.annotations.SerializedName
 open class ImageRect(
 
     @SerializedName("x")
-    val x: Float,
+    var x: Float,
     @SerializedName("y")
-    val y: Float,
+    var y: Float,
     @SerializedName("width")
-    val width: Int,
+    var width: Int,
     @SerializedName("height")
-    val height: Int
+    var height: Int
 ) : Parcelable {
+
     constructor(parcel: Parcel) : this(
         parcel.readFloat(),
         parcel.readFloat(),
@@ -42,5 +44,17 @@ open class ImageRect(
         override fun newArray(size: Int): Array<ImageRect?> {
             return arrayOfNulls(size)
         }
+    }
+
+    fun toDp(context: Context): ImageRect {
+        val pxX = pxFromDp(context, x)
+        val pxY = pxFromDp(context, y)
+        val pxWidth = pxFromDp(context, width.toFloat())
+        val pxHeight = pxFromDp(context, height.toFloat())
+        return ImageRect(pxX, pxY, pxWidth.toInt(), pxHeight.toInt())
+    }
+
+    open fun pxFromDp(context: Context, dp: Float): Float {
+        return dp * context.resources.displayMetrics.density
     }
 }

@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="false"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".module.ZoomImageActivity">
+    tools:context="de.impacgroup.zoomimageview.module.ZoomImageActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/fragment_container_view"
@@ -20,8 +20,8 @@
 
     <ImageButton
         android:id="@+id/close_button"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
         android:layout_marginTop="40dp"
         android:layout_marginEnd="16dp"
         android:fitsSystemWindows="false"
