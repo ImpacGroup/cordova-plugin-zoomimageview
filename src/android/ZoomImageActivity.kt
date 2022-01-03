@@ -29,14 +29,14 @@ class ZoomImageActivity : AppCompatActivity() {
         const val ZOOM_IMAGE_STATE_KEY = "viewState"
 
 
-        override fun present(activity: AppCompatActivity, bitmap: Bitmap, point: ImageRect?) {
+        override fun present(activity: AppCompatActivity, bitmap: Bitmap, point: ImagePosition?) {
             present(activity, bitmap, point, true)
         }
 
         override fun present(
             activity: AppCompatActivity,
             bitmap: Bitmap,
-            point: ImageRect?,
+            point: ImagePosition?,
             closeButton: Boolean
         ) {
             val file = saveImage(activity.applicationContext , bitmap)
@@ -90,7 +90,7 @@ class ZoomImageActivity : AppCompatActivity() {
         }
     }
 
-    private fun present(bitmap: Bitmap, position: ImageRect?) {
+    private fun present(bitmap: Bitmap, position: ImagePosition?) {
         imageFragment = ZoomImageFragment.present(bitmap, position)
         val transaction = supportFragmentManager.beginTransaction()
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
@@ -104,7 +104,7 @@ class ZoomImageActivity : AppCompatActivity() {
 
     private fun dismiss() {
         send(ViewState.WILL_CLOSE)
-        imageFragment.animate(AnimationDirection.FROM_CENTER, object: AnimationListener {
+        imageFragment.animate(AnimationDirection.FROM_CENTER,  object: AnimationListener {
             override fun onAnimationEnd() {
                 val transaction = supportFragmentManager.beginTransaction()
                 transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)

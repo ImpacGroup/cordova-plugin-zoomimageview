@@ -25,6 +25,7 @@ import org.json.JSONException;
 
 import java.util.Objects;
 
+import de.impacgroup.zoomimageview.module.ImagePosition;
 import de.impacgroup.zoomimageview.module.ImageRect;
 import de.impacgroup.zoomimageview.module.ViewState;
 import de.impacgroup.zoomimageview.module.ZoomImageActivity;
@@ -61,10 +62,11 @@ public class ZoomImageView extends CordovaPlugin {
 
             ImageRect rect = Objects.requireNonNull(info.getImageRect()).toDp(cordova.getContext());
             rect.setY(rect.getY() + getStatusBarHeight());
+            ImagePosition position = new ImagePosition(rect, activity.getResources().getConfiguration().orientation);
 
             if (bitmap != null) {
                 activity.runOnUiThread(() -> {
-                    ZoomImageActivity.Companion.present(activity, bitmap, rect, info.getCloseButton());
+                    ZoomImageActivity.Companion.present(activity, bitmap, position, info.getCloseButton());
                 });
                 return true;
             }

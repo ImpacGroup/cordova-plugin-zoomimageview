@@ -30,10 +30,10 @@ class ZoomImageFragment: Fragment() {
     lateinit var animImageView: ImageView
     lateinit var zoomImageFragment: ConstraintLayout
 
-    var position: ImageRect? = null
+    var position: ImagePosition? = null
 
     companion object {
-        fun present(bitmap: Bitmap, position: ImageRect?): ZoomImageFragment {
+        fun present(bitmap: Bitmap, position: ImagePosition?): ZoomImageFragment {
             val fragment = ZoomImageFragment()
             fragment.bitmap = bitmap
             fragment.position = position
@@ -80,9 +80,19 @@ class ZoomImageFragment: Fragment() {
         }
     }
 
+    private fun canAnimate(position: ImagePosition): Boolean {
+        return activity?.resources?.configuration?.orientation == position.orientation
+    }
+
     fun animate(animationDirection: AnimationDirection, listener: AnimationListener?) {
 
-        position?.let {
+        position?.let { mPosition ->
+            // Checks if the ImagePosition fits to the current display orientation;
+            if (!canAnimate(mPosition)) {
+                listener?.onAnimationEnd()
+                return
+            }
+
             animImageView.visibility = View.VISIBLE
             zoomImageView.visibility = View.INVISIBLE
 
@@ -91,112 +101,131 @@ class ZoomImageFragment: Fragment() {
             if (animImageViewId != null && zoomImageFragmentId != null) {
                 when (animationDirection) {
                     AnimationDirection.TO_CENTER -> {
-                        val startConstraintSet = ConstraintSet()
-                        startConstraintSet.clone(zoomImageFragment)
-                        startConstraintSet.connect(
-                            animImageViewId,
-                            ConstraintSet.TOP,
-                            zoomImageFragmentId,
-                            ConstraintSet.TOP,
-                            it.y.toInt()
-                        )
-                        startConstraintSet.connect(
-                            animImageViewId,
-                            ConstraintSet.START,
-                            zoomImageFragmentId,
-                            ConstraintSet.START,
-                            it.x.toInt()
-                        )
-                        val displayMetrics = DisplayMetrics()
-                        activity?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
-                        startConstraintSet.connect(
-                            animImageViewId,
-                            ConstraintSet.END,
-                            zoomImageFragmentId,
-                            ConstraintSet.END,
-                            displayMetrics.widthPixels - (it.x.toInt() + it.width)
-                        )
-                        startConstraintSet.applyTo(zoomImageFragment)
-
-                        zoomImageFragment.post {
-                            val endConstraintSet = ConstraintSet()
-                            endConstraintSet.clone(zoomImageFragment)
-                            endConstraintSet.connect(
-                                animImageViewId,
-                                ConstraintSet.TOP,
-                                zoomImageFragmentId,
-                                ConstraintSet.TOP,
-                                0
-                            )
-                            endConstraintSet.connect(
-                                animImageViewId,
-                                ConstraintSet.START,
-                                zoomImageFragmentId,
-                                ConstraintSet.START,
-                                0
-                            )
-                            endConstraintSet.connect(
-                                animImageViewId,
-                                ConstraintSet.END,
-                                zoomImageFragmentId,
-                                ConstraintSet.END,
-                                0
-                            )
-                            endConstraintSet.connect(
-                                animImageViewId,
-                                ConstraintSet.BOTTOM,
-                                zoomImageFragmentId,
-                                ConstraintSet.BOTTOM,
-                                0
-                            )
-                            TransitionManager.beginDelayedTransition(
-                                zoomImageFragment,
-                                getTransition(listener)
-                            )
-                            endConstraintSet.applyTo(zoomImageFragment)
-                        }
+                        toCenterTransition(mPosition, animImageViewId, zoomImageFragmentId, listener)
                     }
                     AnimationDirection.FROM_CENTER -> {
-                        zoomImageFragment.post {
-                            val endConstraintSet = ConstraintSet()
-                            endConstraintSet.clone(zoomImageFragment)
-                            endConstraintSet.removeFromVerticalChain(animImageViewId)
-                            endConstraintSet.connect(
-                                animImageViewId,
-                                ConstraintSet.TOP,
-                                zoomImageFragmentId,
-                                ConstraintSet.TOP,
-                                it.y.toInt()
-                            )
-
-                            endConstraintSet.connect(
-                                animImageViewId,
-                                ConstraintSet.START,
-                                zoomImageFragmentId,
-                                ConstraintSet.START,
-                                it.x.toInt()
-                            )
-
-                            val displayMetrics = DisplayMetrics()
-                            activity?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
-                            endConstraintSet.connect(
-                                animImageViewId,
-                                ConstraintSet.END,
-                                zoomImageFragmentId,
-                                ConstraintSet.END,
-                                displayMetrics.widthPixels - (it.x.toInt() + it.width)
-                            )
-                            TransitionManager.beginDelayedTransition(
-                                zoomImageFragment,
-                                getTransition(listener)
-                            )
-                            endConstraintSet.applyTo(zoomImageFragment)
-                        }
+                        fromCenterTransition(mPosition, animImageViewId, zoomImageFragmentId, listener)
                     }
                 }
             }
         } ?: kotlin.run {
             listener?.onAnimationEnd()
+        }
+
+    }
+
+    private fun toCenterTransition(
+        position: ImagePosition,
+        animImageViewId: Int,
+        zoomImageFragmentId: Int,
+        listener: AnimationListener?
+    ) {
+        val startConstraintSet = ConstraintSet()
+        startConstraintSet.clone(zoomImageFragment)
+        startConstraintSet.connect(
+            animImageViewId,
+            ConstraintSet.TOP,
+            zoomImageFragmentId,
+            ConstraintSet.TOP,
+            position.rect.y.toInt()
+        )
+        startConstraintSet.connect(
+            animImageViewId,
+            ConstraintSet.START,
+            zoomImageFragmentId,
+            ConstraintSet.START,
+            position.rect.x.toInt()
+        )
+        val displayMetrics = DisplayMetrics()
+        activity?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
+        startConstraintSet.connect(
+            animImageViewId,
+            ConstraintSet.END,
+            zoomImageFragmentId,
+            ConstraintSet.END,
+            displayMetrics.widthPixels - (position.rect.x.toInt() + position.rect.width)
+        )
+        startConstraintSet.applyTo(zoomImageFragment)
+
+        zoomImageFragment.post {
+            val endConstraintSet = ConstraintSet()
+            endConstraintSet.clone(zoomImageFragment)
+            endConstraintSet.connect(
+                animImageViewId,
+                ConstraintSet.TOP,
+                zoomImageFragmentId,
+                ConstraintSet.TOP,
+                0
+            )
+            endConstraintSet.connect(
+                animImageViewId,
+                ConstraintSet.START,
+                zoomImageFragmentId,
+                ConstraintSet.START,
+                0
+            )
+            endConstraintSet.connect(
+                animImageViewId,
+                ConstraintSet.END,
+                zoomImageFragmentId,
+                ConstraintSet.END,
+                0
+            )
+            endConstraintSet.connect(
+                animImageViewId,
+                ConstraintSet.BOTTOM,
+                zoomImageFragmentId,
+                ConstraintSet.BOTTOM,
+                0
+            )
+            TransitionManager.beginDelayedTransition(
+                zoomImageFragment,
+                getTransition(listener)
+            )
+            endConstraintSet.applyTo(zoomImageFragment)
+        }
+    }
+
+    private fun fromCenterTransition(
+        position: ImagePosition,
+        animImageViewId: Int,
+        zoomImageFragmentId: Int,
+        listener: AnimationListener?
+    ) {
+        zoomImageFragment.post {
+            val endConstraintSet = ConstraintSet()
+            endConstraintSet.clone(zoomImageFragment)
+            endConstraintSet.removeFromVerticalChain(animImageViewId)
+            endConstraintSet.connect(
+                animImageViewId,
+                ConstraintSet.TOP,
+                zoomImageFragmentId,
+                ConstraintSet.TOP,
+                position.rect.y.toInt()
+            )
+
+            endConstraintSet.connect(
+                animImageViewId,
+                ConstraintSet.START,
+                zoomImageFragmentId,
+                ConstraintSet.START,
+                position.rect.x.toInt()
+            )
+
+            val displayMetrics = DisplayMetrics()
+            activity?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
+            endConstraintSet.connect(
+                animImageViewId,
+                ConstraintSet.END,
+                zoomImageFragmentId,
+                ConstraintSet.END,
+                displayMetrics.widthPixels - (position.rect.x.toInt() + position.rect.width)
+            )
+            TransitionManager.beginDelayedTransition(
+                zoomImageFragment,
+                getTransition(listener)
+            )
+            endConstraintSet.applyTo(zoomImageFragment)
         }
     }
 

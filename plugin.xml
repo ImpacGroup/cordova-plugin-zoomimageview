@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
         xmlns:android="http://schemas.android.com/apk/res/android"
-        id="cordova-plugin-zoomimageview" version="1.2.3">
+        id="cordova-plugin-zoomimageview" version="1.2.4">
     <name>zoomimageview</name>
 
     <description>An Cordova plugin for iOS and Android that allows to display an image in fullscreen and zoom in and out.</description>
@@ -47,6 +47,7 @@
         <source-file src="src/android/AnimationDirection.kt" target-dir="src/main/kotlin/de/impacgroup/zoomimageview/module"/>
         <source-file src="src/android/AnimationListener.kt" target-dir="src/main/kotlin/de/impacgroup/zoomimageview/module"/>
         <source-file src="src/android/ZoomImage.kt" target-dir="src/main/kotlin/de/impacgroup/zoomimageview/module"/>
+        <source-file src="src/android/ImagePosition.kt" target-dir="src/main/kotlin/de/impacgroup/zoomimageview/module"/>
         <source-file src="src/android/ZoomImageActivity.kt" target-dir="src/main/kotlin/de/impacgroup/zoomimageview/module"/>
         <source-file src="src/android/ZoomImageFragment.kt" target-dir="src/main/kotlin/de/impacgroup/zoomimageview/module"/>
         <source-file src="src/android/ViewState.kt" target-dir="src/main/kotlin/de/impacgroup/zoomimageview/module"/>
