@@ -106,10 +106,12 @@ class ZoomImageActivity : AppCompatActivity() {
         send(ViewState.WILL_CLOSE)
         imageFragment.animate(AnimationDirection.FROM_CENTER,  object: AnimationListener {
             override fun onAnimationEnd() {
-                val transaction = supportFragmentManager.beginTransaction()
-                transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                transaction.remove(imageFragment)
-                transaction.commit()
+                if (!supportFragmentManager.isDestroyed) {
+                    val transaction = supportFragmentManager.beginTransaction()
+                    transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                    transaction.remove(imageFragment)
+                    transaction.commit()
+                }
                 finish()
                 overridePendingTransition(0, android.R.anim.fade_out)
             }
